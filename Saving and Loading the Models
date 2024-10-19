@@ -1,0 +1,10 @@
+# Save NAS model
+best_model.save('nas_jet_engine_model.h5')
+
+# Save fine-tuned model
+model.save('finetuned_resnet50_jet_engine.h5')
+
+# Load models when needed
+from tensorflow.keras.models import load_model
+nas_model_loaded = load_model('nas_jet_engine_model.h5')
+finetuned_model_loaded = load_model('finetuned_resnet50_jet_engine.h5')
