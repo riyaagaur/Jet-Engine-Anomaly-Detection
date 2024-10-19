@@ -1,4 +1,4 @@
-## Jet Engine Anomaly Detection
+# Jet Engine Anomaly Detection
 
 ## Project Overview
 
