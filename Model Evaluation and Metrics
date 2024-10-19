@@ -1,0 +1,23 @@
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+
+# Make predictions with the NAS model
+y_pred_nas = (best_model.predict(X_test_scaled) > 0.5).astype("int32")
+
+# Evaluate NAS model
+accuracy_nas = accuracy_score(y_test, y_pred_nas)
+precision_nas = precision_score(y_test, y_pred_nas)
+recall_nas = recall_score(y_test, y_pred_nas)
+f1_nas = f1_score(y_test, y_pred_nas)
+
+print(f'NAS Model Performance:\n Accuracy: {accuracy_nas}\n Precision: {precision_nas}\n Recall: {recall_nas}\n F1-score: {f1_nas}')
+
+# Make predictions with the fine-tuned model
+y_pred_finetuned = (model.predict(X_test_scaled) > 0.5).astype("int32")
+
+# Evaluate fine-tuned pre-trained model
+accuracy_finetuned = accuracy_score(y_test, y_pred_finetuned)
+precision_finetuned = precision_score(y_test, y_pred_finetuned)
+recall_finetuned = recall_score(y_test, y_pred_finetuned)
+f1_finetuned = f1_score(y_test, y_pred_finetuned)
+
+print(f'Fine-tuned Pre-trained Model Performance:\n Accuracy: {accuracy_finetuned}\n Precision: {precision_finetuned}\n Recall: {recall_finetuned}\n F1-score: {f1_finetuned}')
