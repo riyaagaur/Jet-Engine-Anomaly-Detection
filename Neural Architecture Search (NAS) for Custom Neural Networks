@@ -1,0 +1,35 @@
+import tensorflow as tf
+from tensorflow.keras import layers
+from kerastuner import HyperModel
+from kerastuner.tuners import RandomSearch
+
+# Define the HyperModel for NAS
+class JetEngineHyperModel(HyperModel):
+    def build(self, hp):
+        model = tf.keras.Sequential()
+        model.add(layers.InputLayer(input_shape=(X_train_scaled.shape[1],)))
+
+        # Add hidden layers with NAS
+        for i in range(hp.Int('num_layers', 1, 3)):
+            model.add(layers.Dense(units=hp.Int('units_' + str(i), 32, 256, step=32),
+                                   activation=hp.Choice('activation_' + str(i), ['relu', 'tanh'])))
+        
+        model.add(layers.Dense(1, activation='sigmoid'))  # Output layer
+        model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+        return model
+
+# Instantiate the HyperModel
+hypermodel = JetEngineHyperModel()
+
+# Use RandomSearch to find the best architecture
+tuner = RandomSearch(hypermodel, objective='val_accuracy', max_trials=10, executions_per_trial=2, directory='nas_jet_engine')
+
+# Search for the best model
+tuner.search(X_train_scaled, y_train, epochs=20, validation_split=0.2)
+
+# Get the best model
+best_model = tuner.get_best_models(num_models=1)[0]
+
+# Evaluate the model
+test_loss, test_acc = best_model.evaluate(X_test_scaled, y_test)
+print(f'NAS Model Test Accuracy: {test_acc}')
