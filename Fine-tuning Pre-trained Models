@@ -1,0 +1,29 @@
+from tensorflow.keras.applications import ResNet50
+from tensorflow.keras.layers import Dense, Flatten
+from tensorflow.keras.models import Model
+
+# Load pre-trained ResNet50 model, exclude the top layers
+base_model = ResNet50(weights='imagenet', include_top=False, input_shape=(224, 224, 3))
+
+# Freeze all layers in the base model
+for layer in base_model.layers:
+    layer.trainable = False
+
+# Add new layers for fine-tuning
+x = Flatten()(base_model.output)
+x = Dense(256, activation='relu')(x)
+x = Dense(128, activation='relu')(x)
+output = Dense(1, activation='sigmoid')(x)
+
+# Create the new model
+model = Model(inputs=base_model.input, outputs=output)
+
+# Compile the model
+model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+
+# Train the model on jet engine data (use sensor data in image-like format)
+history = model.fit(X_train_scaled, y_train, validation_split=0.2, epochs=10, batch_size=32)
+
+# Evaluate the model
+test_loss, test_acc = model.evaluate(X_test_scaled, y_test)
+print(f'Fine-tuned Pre-trained Model Test Accuracy: {test_acc}')
